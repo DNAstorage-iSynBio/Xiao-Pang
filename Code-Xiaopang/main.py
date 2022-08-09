@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
 import xiaopang as xp
 
-filename='C:/Users/isynbio/Desktop/python_program/txt/E.txt'
+data_path = os.path.dirname(os.path.realpath(__file__))
+filename = os.path.join(data_path, 'data','Natural selection and central dogma of molecular biology.txt')
 with open(filename, 'r') as f1: data =''.join(f1.readlines())
 
-[symbol_composition,symbol_frequency]=xp.p_generate(data) 
-seat,codewords=xp.seat_and_codewords(symbol_frequency)
-code_initial=xp.codegenerate(codewords,symbol_composition,data) 
+# Quaternary Huffman direct encoding
+quaternary_huffman=xp.Quaternary_huffman(data=data)
+[code_initial,symbol_composition,seat]=quaternary_huffman.codegenerate()
 
-huf_chart1=xp.enchart1_word(symbol_composition)  
-huf_chart2=xp.enchart2_loc(seat)        
-huf_chart01=xp.enchart0(symbol_composition)     
-huf_chart02=xp.enchart0(seat)           
-code_table_add=huf_chart01+huf_chart02+huf_chart1+huf_chart2+code_initial     
+# Code table addition 
+code_table=xp.Code_table_addition(symbol_composition=symbol_composition,seat=seat)
+code_table_add=code_table.f_huffman_table()+code_initial     
 
-[code5,code6]=xp.c5c6()   
-code_first_extension_mapping=xp.code_5to6(code_table_add,code5,code6)    
-code_final=xp.encode_homopolymer(code_first_extension_mapping)   
+# Bases extension mapping
+extension_mapping=xp.Extension_mapping(code_initial=code_table_add)
+code_final=extension_mapping.f_extension_mapping_twice()
 
-dna_sequences=xp.f_index_and_num2base(code_final,994)
+# Sequence division and index addition
+segmentation_index=xp.Segmentation_index(sequences_initial=code_final,n_bases_payload=994)
+dna_sequences=segmentation_index.f_index_and_num2base()
