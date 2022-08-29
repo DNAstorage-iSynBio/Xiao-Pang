@@ -15,7 +15,7 @@ data, file_type, size = f_read_data_from_file(filename_in_data=filename)
 quaternary_huffman = Quaternary_huffman(data=data, file_type=file_type)
 [encode_initial, symbol_composition, seat] = quaternary_huffman.codegenerate()
 
-# Encoding -- code table addition 
+# Encoding -- code table addition
 code_table = Code_table_addition(symbol_composition=symbol_composition, seat=seat, file_type=file_type)
 encode_table_add = code_table.f_huffman_table() + encode_initial
 
